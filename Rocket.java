@@ -11,7 +11,7 @@ import greenfoot.*;
  */
 public class Rocket extends SmoothMover
 {
-    private static final int gunReloadTime = 5;         // The minimum delay between firing the gun.
+    private static final int gunReloadTime = 3;         // The minimum delay between firing the gun.
 
     private int reloadDelayCount;               // How long ago we fired the gun the last time.
     
@@ -24,6 +24,7 @@ public class Rocket extends SmoothMover
     public Rocket()
     {
         reloadDelayCount = 5;
+        addToVelocity(new Vector(getRotation(), .2));
     }
 
     /**
@@ -32,8 +33,30 @@ public class Rocket extends SmoothMover
      */
     public void act()
     {
+        move();
+        pewPew();
         checkKeys();
         reloadDelayCount++;
+        checkCollision();
+    }
+    
+    private void pewPew()
+    {
+        if (Greenfoot.isKeyDown("space")) 
+        {
+            fire();
+        }
+    }
+    
+    private void checkCollision()
+    {
+        if (getOneIntersectingObject(Asteroid.class) != null)
+        {
+            World world = getWorld();
+            world.addObject(new Explosion(), getX(), getY());
+            getWorld().removeObject(this);
+            Greenfoot.stop();
+        }
     }
     
     /**
@@ -41,9 +64,39 @@ public class Rocket extends SmoothMover
      */
     private void checkKeys() 
     {
-        if (Greenfoot.isKeyDown("space")) 
+        ignite(Greenfoot.isKeyDown("up"));
+        
+        if (Greenfoot.isKeyDown("left"))
         {
-            fire();
+            turn(-5);
+        }
+        if (Greenfoot.isKeyDown("right"))
+        {
+            turn(5);
+        }
+        if (Greenfoot.isKeyDown("down"))
+        {
+            move(-3);
+        }
+    }
+    
+    private void ignite(boolean boosterOn)
+    {
+        if (!Greenfoot.isKeyDown("up"))
+        {
+            boosterOn = false;
+        }
+        if (boosterOn = true)
+        {
+            if (Greenfoot.isKeyDown("up"))
+            {
+                setImage("rocketWithThrust.png");
+                addToVelocity(new Vector(getRotation(), .1));
+            }
+            else
+            {
+                setImage("rocket.png");
+            }
         }
     }
     
@@ -60,5 +113,4 @@ public class Rocket extends SmoothMover
             reloadDelayCount = 0;
         }
     }
-    
 }
