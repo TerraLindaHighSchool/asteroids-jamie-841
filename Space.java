@@ -34,6 +34,11 @@ public class Space extends World
         ProtonWave.initializeImages();
     }
     
+    public void updateScore(int addToScore)
+    {
+        scoreCounter.add(addToScore);
+    }
+    
     /**
      * Add a given number of asteroids to our world. Asteroids are only added into
      * the left half of the world.
@@ -71,13 +76,14 @@ public class Space extends World
         }
     }
     
-    
     /**
      * This method is called when the game is over to display the final score.
      */
     public void gameOver() 
     {
-        // TODO: show the score board here. Currently missing.
+        int x = getWidth() / 2;
+        int y = getHeight() / 2;
+        int currentScore = scoreCounter.getValue();
+        addObject(new ScoreBoard(currentScore), x, y);
     }
-
 }
